@@ -1,0 +1,61 @@
+#include<stdio.h>
+#include<string.h>
+
+#define maxn 1010//最大规模
+#define inf 0x3f3f3f3f//最大值，假定无穷大
+
+int dis[maxn][maxn];//存图数组
+int flag[maxn];//标记数组
+int n,t;//分别为当前用图规模和已知路径条数
+
+void Dijkstra(int index=0)
+{
+    for(int i=0;i<n;i++)//其实循环n-1次就可以，不过这样也无伤大雅
+    {
+        int Min=inf;
+        int pos;
+        for(int j=0;j<n;j++)
+        {
+            if(Min>dis[index][j]&&!flag[j])
+            {
+                Min=dis[index][j];
+                pos=j;
+            }
+        }
+        //以上完成了找到目前距离原点最近但是还没有走过的点
+        flag[pos]=1;//将此点标记，更改dis数组里面原点距离其余点的最短路径
+        for(int j=0;j<n;j++)
+        {
+            dis[index][j]=dis[index][j]<dis[index][pos]+dis[pos][j]?dis[index][j]:dis[index][pos]+dis[pos][j];
+            //这句相当于
+            //dis[index][j]=min(dis[index][j],dis[index][pos]+dis[pos][j]);
+            //但是因为要多包含一个头文件就没有再去写成这样，顺手用了个？
+        }
+    }
+}
+
+int main()
+{
+    while(scanf("%d%d",&n,&t)!=EOF)
+    {
+        memset(dis,inf,sizeof(dis));
+        memset(flag,0,sizeof(flag));
+        //多组测试，以上为初始化环节
+        while(t--)
+        {
+            int a,b,c;
+            scanf("%d%d%d",&a,&b,&c);
+            dis[a][b]=dis[b][a]=c;//默认为无向图，如有需要可以改为有向图
+        }
+        for(int i=0;i<n;i++)//所有点到自己的距离为0
+        {
+            dis[i][i]=0;
+        }
+        int index;
+        scanf("%d",&index);
+        Dijkstra(index);//默认选取0作为起始点,在函数声明处有默认值
+        printf("%d\n",dis[index][n-1]);//这里默认输出到最后一点的最短距离，如有需要可以自行更改
+    }
+
+    return 0;
+}

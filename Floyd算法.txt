@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<string.h>
+
+#define inf 0x3f3f3f3f
+#define maxn 1010
+
+int dis[maxn][maxn];
+int n,t;
+
+void Floyd()//Floyd全图暴力即可，直接三重循环，和Dijkstra不同的是他可以求全图最短路
+{
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            for(int k=0;k<n;k++)
+            {
+                dis[i][j]=dis[i][j]<dis[i][k]+dis[k][j]?dis[i][j]:dis[i][k]+dis[k][j];
+            }
+        }
+    }
+}
+
+int main()
+{
+    while(scanf("%d%d",&n,&t)!=EOF)
+    {
+        memset(dis,inf,sizeof(dis));
+        while(t--)
+        {
+            int a,b,c;
+            scanf("%d%d%d",&a,&b,&c);
+            dis[a][b]=dis[b][a]=c;
+        }
+        Floyd();
+        int k;//k次查询
+        scanf("%d",&k);
+        while(k--)
+        {
+            int a,b;
+            scanf("%d%d",&a,&b);
+            printf("%d\n",dis[a][b]);
+        }
+    }
+    return 0;
+}
