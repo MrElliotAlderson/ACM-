@@ -1,0 +1,63 @@
+#include<stdio.h>
+#include<string.h>
+
+#define maxn 1010//最大规模，方便改动
+#define inf 0x3f3f3f3f//定义最大值
+
+int dis[maxn][maxn];//存图数组
+bool visit[maxn];//标记集合数组
+int lth[maxn];//当前集合到各点最短距离，包括这个和上面两个数组初始化为最大值
+int n,t;//n为用到的图形规模，t为已知路径数
+int ans;//最小生成树的各边权值之和
+
+void prim(int index)
+{
+    visit[index]=true;//首先将开始节点加入集合当中
+    for(int i=0; i<n; i++)
+    {
+        lth[i]=dis[index][i];//然后循环把其相邻节点的距离都加进来，不相邻自动为无限大
+    }
+    int Min=inf;
+    for(int i=1; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+        {
+            if(!visit[j]&&lth[j]<Min)
+            {
+                Min=lth[j];//找到目前距离全图最近节点，然后记录他的位置和距离
+                index=j;
+            }
+        }
+        visit[index]=true;//将其加入到集合当中
+        ans+=Min;//计算最短结果
+        for(int j=0; j<n; j++)
+        {
+            if(!visit[j]&&lth[j]>dis[index][j])
+            {
+                lth[j]=dis[index][j];//更新目前全图距离所有点的最短距离
+            }
+        }
+    }
+
+}
+
+int main()
+{
+    while(scanf("%d%d",&n,&t)!=EOF)
+    {
+        memset(dis,inf,sizeof(dis));
+        memset(visit,false,sizeof(visit));
+        memset(lth,inf,sizeof(lth));
+        ans=0;
+        //这行以上为初始化操作，没有技术含量
+        while(t--)//t次输入
+        {
+            int a,b,c;
+            scanf("%d%d%d",&a,&b,&c);
+            dis[a][b]=dis[b][a]=c;//这里可以自己改成有向图，假设不是对称存储的话...
+        }
+        prim(0);//当然这里你也可以制定开始节点
+        printf("%d\n",ans);//输出结果
+    }
+    return 0;
+}
