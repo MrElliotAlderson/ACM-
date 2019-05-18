@@ -1,0 +1,64 @@
+#include<stdio.h>
+#include<algorithm>
+using namespace std;
+#define maxn 1010
+
+struct Edge
+{
+    int from,to;
+    int weight;
+}edges[maxn];
+int n;
+int Union_find[maxn];
+
+bool cmp(Edge a,Edge b)//快排函数
+{
+    return a.weight<b.weight;
+}
+
+void Union_root(Edge a)//并查集合并
+{
+    Union_find[a.from]=a.to;
+}
+
+int find_root(int a)//找根
+{
+    while(Union_find[a]!=a)
+    {
+        a=Union_find[a];
+    }
+    return a;
+}
+
+void kruscal()//克鲁斯卡尔，后续可以自己加操作
+{
+    int num=0;
+    for(int i=0;i<n&&num<n-1;i++)
+    {
+        if(find_root(edges[i].from)!=find_root(edges[i].to))
+        {
+            Union_root(edges[i]);
+            printf("合并边，起点%d，终点%d\n",edges[i].from,edges[i].to);
+            num++;
+        }
+    }
+}
+
+int main()
+{
+    scanf("%d",&n);
+    int t;
+    scanf("%d",&t);
+    for(int i=0;i<n+1;i++)
+    {
+        Union_find[i]=i;
+    }
+    for(int i=0;i<t;i++)
+    {
+        scanf("%d%d%d",&edges[i].from,&edges[i].to,&edges[i].weight);
+    }
+    sort(edges,edges+t,cmp);
+    kruscal();
+
+    return 0;
+}
